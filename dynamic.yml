@@ -1,0 +1,28 @@
+http:
+  middlewares:
+    cors-all:
+      headers:
+        accessControlAllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - PATCH
+          - OPTIONS
+        accessControlAllowHeaders:
+          - "Content-Type"
+          - "Authorization"
+          - "X-Requested-With"
+          - "Accept"
+          - "Origin"
+        accessControlAllowOriginList:
+          - "*"
+        accessControlMaxAge: 86400
+        addVaryHeader: true
+
+    auth-jwt:
+      forwardAuth:
+        address: "http://auth-service:9000/"
+        authRequestHeaders:
+          - "Authorization"
+        trustForwardHeader: true

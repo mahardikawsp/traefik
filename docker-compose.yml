@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  traefik:
+    image: traefik:v3.0
+    command:
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+
+      - "--entrypoints.web.address=:80"
+      # TAMBAHAN TCP ENTRYPOINT
+      - "--entrypoints.gate-tcp.address=:9031"
+      - "--entrypoints.location-tcp.address=:9033"
+      - "--entrypoints.order-tcp.address=:9045"
+
+
+      # File provider untuk dynamic config (middleware CORS, dll)
+      - "--providers.file.filename=/etc/traefik/dynamic.yml"
+      - "--providers.file.watch=true"
+
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "9031:9031"
+      - "9033:9033"
+      - "9045:9045"
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./dynamic.yml:/etc/traefik/dynamic.yml:ro
+
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
+    name: traefik_web
